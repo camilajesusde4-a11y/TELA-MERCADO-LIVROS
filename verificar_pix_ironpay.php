@@ -1,4 +1,21 @@
 <?php
+$origem = $_SERVER['HTTP_ORIGIN'] ?? '';
+$permitida = getenv('FRONTEND_URL') ?: '';
+
+if ($permitida !== '' && $origem === $permitida) {
+    header('Access-Control-Allow-Origin: ' . $origem);
+    header('Vary: Origin');
+}
+
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
+
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
@@ -11,7 +28,7 @@ if (!preg_match('/^[a-zA-Z0-9_-]{5,100}$/', $hash)) {
     http_response_code(400);
     echo json_encode([
         'status' => 'ERRO',
-        'details' => 'Hash da transaÃ§Ã£o invÃ¡lido'
+        'details' => 'Hash da transa├â┬º├â┬úo inv├â┬ílido'
     ]);
     exit;
 }
@@ -38,7 +55,7 @@ if ($httpCode !== 200 || !is_array($resultado)) {
     http_response_code(502);
     echo json_encode([
         'status' => 'ERRO',
-        'details' => 'NÃ£o foi possÃ­vel consultar a IronPay'
+        'details' => 'N├â┬úo foi poss├â┬¡vel consultar a IronPay'
     ]);
     exit;
 }
@@ -49,7 +66,7 @@ if (($transacao['hash'] ?? '') !== $hash || (int)($transacao['amount'] ?? 0) !==
     http_response_code(502);
     echo json_encode([
         'status' => 'ERRO',
-        'details' => 'TransaÃ§Ã£o nÃ£o corresponde Ã  consulta'
+        'details' => 'Transa├â┬º├â┬úo n├â┬úo corresponde ├â┬á consulta'
     ]);
     exit;
 }
@@ -59,4 +76,3 @@ $status = strtolower((string)($transacao['status'] ?? ''));
 echo json_encode([
     'status' => $status === 'paid' ? 'PAGO' : 'PENDENTE'
 ]);
-

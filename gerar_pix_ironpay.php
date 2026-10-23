@@ -1,4 +1,21 @@
 <?php
+$origem = $_SERVER['HTTP_ORIGIN'] ?? '';
+$permitida = getenv('FRONTEND_URL') ?: '';
+
+if ($permitida !== '' && $origem === $permitida) {
+    header('Access-Control-Allow-Origin: ' . $origem);
+    header('Vary: Origin');
+}
+
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
+
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
@@ -8,7 +25,7 @@ $dados = json_decode(file_get_contents('php://input'), true);
 
 if (!is_array($dados)) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'Dados invÃ¡lidos']);
+    echo json_encode(['success' => false, 'error' => 'Dados inv├â┬ílidos']);
     exit;
 }
 
@@ -26,8 +43,8 @@ if ($nome === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)
     exit;
 }
 
-// Valor fixado no servidor para impedir alteraÃ§Ã£o pelo navegador.
-// Ajustar ao preÃ§o real do produto cadastrado.
+// Valor fixado no servidor para impedir altera├â┬º├â┬úo pelo navegador.
+// Ajustar ao pre├â┬ºo real do produto cadastrado.
 $valorCentavos = 3945;
 
 $payload = [
@@ -72,7 +89,7 @@ curl_close($ch);
 
 if ($resposta === false) {
     http_response_code(502);
-    echo json_encode(['success' => false, 'error' => 'Falha na conexÃ£o com a IronPay']);
+    echo json_encode(['success' => false, 'error' => 'Falha na conex├â┬úo com a IronPay']);
     exit;
 }
 
@@ -82,7 +99,7 @@ if ($httpCode < 200 || $httpCode >= 300 || !is_array($resultado)) {
     http_response_code(502);
     echo json_encode([
         'success' => false,
-        'error' => 'IronPay recusou a solicitaÃ§Ã£o',
+        'error' => 'IronPay recusou a solicita├â┬º├â┬úo',
         'http_status' => $httpCode
     ]);
     exit;
@@ -97,4 +114,3 @@ if ($pix['success'] && !empty($pix['transaction_id'])) {
 }
 
 echo json_encode($pix);
-
