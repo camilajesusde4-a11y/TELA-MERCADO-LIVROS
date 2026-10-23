@@ -1,0 +1,4 @@
+.env
+*.log
+*.bak
+ironpay_config.local.php
