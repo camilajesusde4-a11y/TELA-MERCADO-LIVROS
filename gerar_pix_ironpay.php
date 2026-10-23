@@ -3,7 +3,7 @@
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-$config = require '__DIR__ . '/ironpay_config.php'';
+$config = require __DIR__ . '/ironpay_config.php';
 
 $dados = json_decode(file_get_contents('php://input'), true);
 
