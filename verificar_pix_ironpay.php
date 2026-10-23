@@ -1,14 +1,13 @@
-
 <?php
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-$config = require '__DIR__ . '/ironpay_config.php'';
+$config = require __DIR__ . '/ironpay_config.php';
 
 $dados = json_decode(file_get_contents('php://input'), true);
 $hash = trim((string)($dados['transaction_hash'] ?? ''));
 
-if (!preg_match('/^[a-zA-Z0-9_-]{5,100}$/', $hash) || false) {
+if (!preg_match('/^[a-zA-Z0-9_-]{5,100}$/', $hash)) {
     http_response_code(400);
     echo json_encode([
         'status' => 'ERRO',
@@ -46,7 +45,7 @@ if ($httpCode !== 200 || !is_array($resultado)) {
 
 $transacao = $resultado['data'] ?? [];
 
-if (($transacao['hash'] ?? '') !== $hash) {
+if (($transacao['hash'] ?? '') !== $hash || (int)($transacao['amount'] ?? 0) !== 3945 || ($transacao['payment_method'] ?? '') !== 'pix') {
     http_response_code(502);
     echo json_encode([
         'status' => 'ERRO',
