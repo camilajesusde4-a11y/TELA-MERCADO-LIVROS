@@ -100,7 +100,7 @@ if ($httpCode < 200 || $httpCode >= 300 || !is_array($resultado)) {
     echo json_encode([
         'success' => false,
         'error' => 'IronPay recusou a solicita├â┬º├â┬úo',
-        'http_status' => $httpCode
+        'http_status' => $httpCode, 'ironpay_details' => $resultado['errors'] ?? $resultado['message'] ?? 'Sem detalhes'
     ]);
     exit;
 }
