@@ -45,7 +45,7 @@ if ($nome === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)
 
 // Valor fixado no servidor para impedir altera├â┬º├â┬úo pelo navegador.
 // Ajustar ao pre├â┬ºo real do produto cadastrado.
-$valorCentavos = 3945;
+$valorCentavos = (int)$config["produto_valor_centavos"];
 
 $payload = [
     'amount' => $valorCentavos,
@@ -61,7 +61,7 @@ $payload = [
     ],
     'cart' => [[
         'product_hash' => $config['product_hash'],
-        'title' => 'CAPACETE LS2',
+        'title' => $config['produto_nome'],
         'price' => $valorCentavos,
         'quantity' => 1,
         'operation_type' => 1,
@@ -111,7 +111,7 @@ $pix = adaptarRespostaPix($resultado);
 
 if ($pix['success'] && !empty($pix['transaction_id'])) {
     $_SESSION['ironpay_hash'] = $pix['transaction_id'];
-    $_SESSION['ironpay_amount'] = 3945;
+    $_SESSION['ironpay_amount'] = $valorCentavos;
 }
 
 echo json_encode($pix);

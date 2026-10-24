@@ -62,7 +62,7 @@ if ($httpCode !== 200 || !is_array($resultado)) {
 
 $transacao = $resultado['data'] ?? [];
 
-if (($transacao['hash'] ?? '') !== $hash || (int)($transacao['amount'] ?? 0) !== 3945 || ($transacao['payment_method'] ?? '') !== 'pix') {
+if (($transacao['hash'] ?? '') !== $hash || (int)($transacao['amount'] ?? 0) !== (int)$config['produto_valor_centavos'] || ($transacao['payment_method'] ?? '') !== 'pix') {
     http_response_code(502);
     echo json_encode([
         'status' => 'ERRO',
