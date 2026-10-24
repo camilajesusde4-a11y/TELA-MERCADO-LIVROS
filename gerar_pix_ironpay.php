@@ -50,6 +50,7 @@ $valorCentavos = 3945;
 $payload = [
     'amount' => $valorCentavos,
     'offer_hash' => $config['offer_hash'],
+    'product_hash' => $config['product_hash'],
     'payment_method' => 'pix',
     'installments' => 1,
     'customer' => [
