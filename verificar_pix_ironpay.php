@@ -51,6 +51,20 @@ curl_close($ch);
 
 $resultado = json_decode($resposta ?: '', true);
 
+if (is_array($resultado)) {
+    $camposPermitidos = [
+        'data', 'hash', 'amount', 'payment_method',
+        'payment_status', 'status', 'transaction'
+    ];
+
+    $campos = array_values(array_intersect(
+        array_keys($resultado),
+        $camposPermitidos
+    ));
+
+    error_log('IRONPAY_ESTRUTURA: ' . json_encode($campos));
+}
+
 if ($httpCode !== 200 || !is_array($resultado)) {
     http_response_code(502);
     echo json_encode([
