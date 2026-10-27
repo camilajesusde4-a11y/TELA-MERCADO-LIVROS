@@ -28,7 +28,7 @@ if (!preg_match('/^[a-zA-Z0-9_-]{5,100}$/', $hash)) {
     http_response_code(400);
     echo json_encode([
         'status' => 'ERRO',
-        'details' => 'Hash da transa├â┬º├â┬úo inv├â┬ílido'
+        'details' => 'Hash da transacao invalido'
     ]);
     exit;
 }
@@ -55,18 +55,28 @@ if ($httpCode !== 200 || !is_array($resultado)) {
     http_response_code(502);
     echo json_encode([
         'status' => 'ERRO',
-        'details' => 'N├â┬úo foi poss├â┬¡vel consultar a IronPay'
+        'details' => 'Nao foi possivel consultar a IronPay'
     ]);
     exit;
 }
 
 $transacao = $resultado['data'] ?? [];
 
+$diagnostico = [
+    'estrutura_data' => isset($resultado['data']) && is_array($resultado['data']),
+    'hash_confere' => ($transacao['hash'] ?? '') === $hash,
+    'valor_confere' => (int)($transacao['amount'] ?? 0) === (int)$config['produto_valor_centavos'],
+    'metodo_confere' => ($transacao['payment_method'] ?? '') === 'pix'
+];
+
+error_log('IRONPAY_DIAGNOSTICO: ' . json_encode($diagnostico));
+
+
 if (($transacao['hash'] ?? '') !== $hash || (int)($transacao['amount'] ?? 0) !== (int)$config['produto_valor_centavos'] || ($transacao['payment_method'] ?? '') !== 'pix') {
     http_response_code(502);
     echo json_encode([
         'status' => 'ERRO',
-        'details' => 'Transa├â┬º├â┬úo n├â┬úo corresponde ├â┬á consulta'
+        'details' => 'Transacao nao corresponde a consulta'
     ]);
     exit;
 }
@@ -76,3 +86,4 @@ $status = strtolower((string)($transacao['status'] ?? ''));
 echo json_encode([
     'status' => $status === 'paid' ? 'PAGO' : 'PENDENTE'
 ]);
+
