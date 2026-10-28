@@ -74,7 +74,7 @@ if ($httpCode !== 200 || !is_array($resultado)) {
     exit;
 }
 
-$transacao = $resultado['data'] ?? [];
+$transacao = $resultado;
 
 $diagnostico = [
     'estrutura_data' => isset($resultado['data']) && is_array($resultado['data']),
@@ -95,7 +95,7 @@ if (($transacao['hash'] ?? '') !== $hash || (int)($transacao['amount'] ?? 0) !==
     exit;
 }
 
-$status = strtolower((string)($transacao['status'] ?? ''));
+$status = strtolower((string)($transacao['payment_status'] ?? ''));
 
 echo json_encode([
     'status' => $status === 'paid' ? 'PAGO' : 'PENDENTE'
