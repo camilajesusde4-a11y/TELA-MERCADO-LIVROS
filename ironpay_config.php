@@ -7,5 +7,6 @@ return [
 
     // CONFIGURACAO DA OFERTA
     'produto_nome' => 'Mini Aspirador de Pó Portátil 4 em 1 USB',
-    'produto_valor_centavos' => 8760
+    'produto_valor_centavos' => 6760
 ];
+
